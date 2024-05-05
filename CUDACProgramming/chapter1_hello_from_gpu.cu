@@ -1,3 +1,4 @@
+// Code 1-1
 #include <stdio.h>
 
 __global__ void helloFromGPU(void)
@@ -10,10 +11,10 @@ __global__ void helloFromGPU(void)
 int main()
 {
     printf("Hello world from CPU!\n");
-    
+
     helloFromGPU<<<1, 10>>>();
     // cudaDeviceReset();
     cudaDeviceSynchronize();
-    
+
     return 0;
 }

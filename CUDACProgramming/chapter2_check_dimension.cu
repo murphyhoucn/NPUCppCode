@@ -1,3 +1,4 @@
+// Code 2-2
 #include <cuda_runtime.h>
 #include <stdio.h>
 
@@ -6,10 +7,10 @@ __global__ void CheckIndex()
     // 核函数中，每个线程都输出自己的线程索引，块索引，块维度，网格维度
     printf("threadIdx: (%d, %d, %d) \tblockIdx: (%d, %d, %d) \t\
             blockDim: (%d, %d, %d) \tgridDim: (%d, %d, %d)\n",
-            threadIdx.x, threadIdx.y, threadIdx.z, 
-            blockIdx.x, blockIdx.y, blockIdx.z, 
-            blockDim.x, blockDim.y, blockDim.z, 
-            gridDim.x, gridDim.y, gridDim.z);
+           threadIdx.x, threadIdx.y, threadIdx.z,
+           blockIdx.x, blockIdx.y, blockIdx.z,
+           blockDim.x, blockDim.y, blockDim.z,
+           gridDim.x, gridDim.y, gridDim.z);
 }
 
 int main()

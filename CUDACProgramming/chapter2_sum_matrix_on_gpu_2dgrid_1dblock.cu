@@ -1,26 +1,26 @@
+// Code 2-7
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <sys/time.h>
 
-#define CHECK(call)\
-{\
-    const cudaError_t error = call;\
-    if(error != cudaSuccess)\
-    {\
-        printf("Error: %s:%d, code: %d, reason: %s\n", __FILE__, __LINE__, error, cudaGetErrorString(error));\
-        exit(-10 * error);\
-    }\
-}
-
+#define CHECK(call)                                                                                               \
+    {                                                                                                             \
+        const cudaError_t error = call;                                                                           \
+        if (error != cudaSuccess)                                                                                 \
+        {                                                                                                         \
+            printf("Error: %s:%d, code: %d, reason: %s\n", __FILE__, __LINE__, error, cudaGetErrorString(error)); \
+            exit(-10 * error);                                                                                    \
+        }                                                                                                         \
+    }
 
 void CheckResult(float *host_ref, float *gpu_ref, const int kN)
 {
     double epsilon = 1.0e-8;
     bool match = 1;
 
-    for(int i = 0; i < kN; ++i)
+    for (int i = 0; i < kN; ++i)
     {
-        if(abs(host_ref[i] - gpu_ref[i]) > epsilon)
+        if (abs(host_ref[i] - gpu_ref[i]) > epsilon)
         {
             match = 0;
             printf("Matrix do no match!");
@@ -28,45 +28,47 @@ void CheckResult(float *host_ref, float *gpu_ref, const int kN)
             break;
         }
     }
-    if (match) printf("Matrix math!\n");
+    if (match)
+        printf("Matrix math!\n");
 }
 
 double CpuSecond()
 {
     struct timeval tp;
     gettimeofday(&tp, NULL);
-    return ((double)tp.tv_sec + (double)tp.tv_usec*1.0e-6);
+    return ((double)tp.tv_sec + (double)tp.tv_usec * 1.0e-6);
 }
 
 void InitData(float *ip, int size)
 {
     time_t t;
-    srand((unsigned) time(&t));
+    srand((unsigned)time(&t));
 
-    for(int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
     {
-        *(ip + i) = (float) (rand() & 0xFF) / 10.0f;
+        *(ip + i) = (float)(rand() & 0xFF) / 10.0f;
     }
 }
 
 void SumMatrixOnHost(float *a, float *b, float *c, const int knx, const int kny)
 {
-    for(int i = 0; i < knx; ++i)
+    for (int i = 0; i < knx; ++i)
     {
-        for(int j = 0; j < kny; ++j)
+        for (int j = 0; j < kny; ++j)
         {
             *(c + i * kny + j) = *(b + i * kny + j) + *(a + i * kny + j);
         }
     }
 }
 
-__global__ void SumMatrixOnGPU2D(float *a, float *b, float *c, int knx, int kny)
+__global__ void SumMatrixOnGPUMix(float *a, float *b, float *c, int knx, int kny)
 {
     unsigned int ix = threadIdx.x + blockIdx.x * blockDim.x;
-    unsigned int iy = threadIdx.y + blockIdx.y * blockDim.y;
+    unsigned int iy = blockIdx.y;
     unsigned int idx = iy * knx + ix;
 
-    if(ix < knx && iy < kny) *(c + idx) = *(a + idx) + *(b + idx);
+    if (ix < knx && iy < kny)
+        *(c + idx) = *(a + idx) + *(b + idx);
 }
 
 int main(int argc, char **argv)
@@ -81,8 +83,8 @@ int main(int argc, char **argv)
     CHECK(cudaSetDevice(dev));
 
     // set up date size of matrix
-    int nx = 1<<14;
-    int ny = 1<<14;
+    int nx = 1 << 14;
+    int ny = 1 << 14;
 
     int nxy = nx * ny;
     int n_bytes = nxy * sizeof(float);
@@ -95,7 +97,7 @@ int main(int argc, char **argv)
     host_ref = (float *)malloc(n_bytes);
     gpu_ref = (float *)malloc(n_bytes);
 
-    // initialize data at host side 
+    // initialize data at host side
     double i_start = CpuSecond();
     InitData(h_a, nxy);
     InitData(h_b, nxy);
@@ -120,14 +122,14 @@ int main(int argc, char **argv)
     cudaMemcpy(d_b, h_b, n_bytes, cudaMemcpyHostToDevice);
 
     // invoke kernel at host side
-    int dimx = 32;
-    int dimy = 32;
+    int dimx = 256;
+    int dimy = 1;
 
-    dim3 block (dimx, dimy);
-    dim3 grid ((nx + block.x - 1) / block.x,(ny + block.y - 1) / block.y);
+    dim3 block(dimx, dimy);
+    dim3 grid((nx + block.x - 1) / block.x, ny);
 
     i_start = CpuSecond();
-    SumMatrixOnGPU2D<<<grid, block>>>(d_a, d_b, d_c, nx, ny);
+    SumMatrixOnGPUMix<<<grid, block>>>(d_a, d_b, d_c, nx, ny);
     cudaDeviceSynchronize();
     i_elaps = CpuSecond() - i_start;
     printf("SumMatrixOnGPU2D<<<(%d, %d), (%d, %d)>>> elapsd %f sec.\n", grid.x, grid.y, block.x, block.y, i_elaps);

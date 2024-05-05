@@ -1,19 +1,20 @@
+// Code 2-6
 #include <cuda_runtime.h>
 #include <stdio.h>
 
-#define CHECK(call)\
-{\
-    const cudaError_t error = call;\
-    if(error != cudaSuccess)\
-    {\
-        printf("Error %s: %d, code: %d, reason: %s\n", __FILE__, __LINE__, error, cudaGetErrorString(error));\
-        exit(-10 * error);\
-    }\
-}
+#define CHECK(call)                                                                                               \
+    {                                                                                                             \
+        const cudaError_t error = call;                                                                           \
+        if (error != cudaSuccess)                                                                                 \
+        {                                                                                                         \
+            printf("Error %s: %d, code: %d, reason: %s\n", __FILE__, __LINE__, error, cudaGetErrorString(error)); \
+            exit(-10 * error);                                                                                    \
+        }                                                                                                         \
+    }
 
 void InitialInt(int *ip, int size)
 {
-    for(int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
         ip[i] = i;
 }
 
@@ -22,9 +23,9 @@ void PrintMatrix(int *c, const int knx, const int kny)
     int *ic = c;
     printf("\nMatrix: (%d, %d)\n", knx, kny);
 
-    for(int iy = 0; iy < kny; ++iy)
+    for (int iy = 0; iy < kny; ++iy)
     {
-        for(int ix = 0; ix < knx; ++ix)
+        for (int ix = 0; ix < knx; ++ix)
         {
             printf("%3d", ic[ix]);
         }
@@ -40,8 +41,8 @@ __global__ void PrintThreadIndex(int *a, const int knx, const int kny)
     int iy = threadIdx.y + blockIdx.y * blockDim.y;
     unsigned int idx = iy * knx + ix;
 
-    printf("thread_id:(%d, %d) block_id:(%d, %d) coordinate:(%d, %d) global index:%d ival:%d\n",\
-            threadIdx.x, threadIdx.y, blockIdx.x, blockIdx.y, ix, iy, idx, a[idx]);
+    printf("thread_id:(%d, %d) block_id:(%d, %d) coordinate:(%d, %d) global index:%d ival:%d\n",
+           threadIdx.x, threadIdx.y, blockIdx.x, blockIdx.y, ix, iy, idx, a[idx]);
 }
 
 int main(int argc, char **argv)
@@ -77,8 +78,8 @@ int main(int argc, char **argv)
     cudaMemcpy(d_matrix_a, h_a, n_bytes, cudaMemcpyHostToDevice);
 
     // set up execution configuration
-    dim3 block (4, 2);
-    dim3 grid ((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
+    dim3 block(4, 2);
+    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
     // invoke the kernel
     PrintThreadIndex<<<grid, block>>>(d_matrix_a, nx, ny);
