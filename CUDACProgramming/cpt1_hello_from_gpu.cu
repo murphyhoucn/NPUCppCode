@@ -13,8 +13,8 @@ int main()
     printf("Hello world from CPU!\n");
 
     helloFromGPU<<<1, 10>>>();
-    // cudaDeviceReset();
-    cudaDeviceSynchronize();
+    cudaDeviceReset();
+    // cudaDeviceSynchronize();
 
     return 0;
 }
