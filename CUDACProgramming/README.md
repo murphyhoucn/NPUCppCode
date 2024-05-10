@@ -19,6 +19,10 @@
 
 ## 参考链接
 - 一个不错的博客网站：https://godweiyang.com/2021/01/25/cuda-reading/
+    - CUDA编程入门极简教程: https://zhuanlan.zhihu.com/p/34587739 ✔
+    - 《CUDA C Programming Guide》《CUDAC编程指南》导读：https://zhuanlan.zhihu.com/p/53773183
+    - CUDA编程入门系列：https://zhuanlan.zhihu.com/p/97044592
+    
 - 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html
 
 ## 简单笔记
