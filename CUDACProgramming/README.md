@@ -47,3 +47,15 @@
 
 ### 第3章　CUDA执行模型第2章　CUDA编程模型
 
+- 目前主流的 CUDA 驱动不再支持nvprof命令!
+``` bash
+(base) houjinliang@3080server:~/MyProject/NPUCppCode/CUDACProgramming$ nvprof ./main 
+======== Warning: nvprof is not supported on devices with compute capability 8.0 and higher.
+                  Use NVIDIA Nsight Systems for GPU tracing and CPU sampling and NVIDIA Nsight Compute for GPU profiling.
+                  Refer https://developer.nvidia.com/tools-overview for more details.
+```
+    - 目前主流的 CUDA 驱动不再支持nvprof命令，但我们仍可以在 NVIDIA Nsight Systems 中使用，在终端输入 `nsys nvprof ./*.o`就可以看到CUDA 程序执行的具体内容。
+    - 另外，`nvprof --metrics` 命令的功能被转换到了 `ncu --metrics` 命令中，下面就对 nvprof/ncu --metrics命令的参数作详细解释，nsys 和 ncu 工具都有可视化版本，这里只讨论命令行版本。
+    - https://zhuanlan.zhihu.com/p/666242337
+    - https://www.cnblogs.com/peihuang/p/17665525.html
+
