@@ -59,3 +59,9 @@
     - https://zhuanlan.zhihu.com/p/666242337
     - https://www.cnblogs.com/peihuang/p/17665525.html
 
+
+- CUDA编程是与硬件紧密相关的，我所有的GPU是RTX 3080
+    - GA102 白皮书: https://www.nvidia.com/content/PDF/nvidia-ampere-ga-102-gpu-architecture-whitepaper-v2.pdf
+    - RTX 3080 规格说明：https://www.bilibili.com/video/BV1oV41127q5/?spm_id_from=333.337.search-card.all.click&vd_source=6d46640a443a49f050af078d1f65143e
+    - RTX 3080 GPU采用的是安培架构，核心代号GA102，但RTX 3080并没有用到完整的GA102,而是在完整的GA102的基础上阉割掉了一个GPC，所以可用SM之后68组。
+    - 所使用的设备的信息可用下面两个程序查看：`cpt2_check_device_infor.cu`, `cpt3_simple_divice_query.cu`
