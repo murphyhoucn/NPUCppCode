@@ -22,6 +22,7 @@
     - CUDA编程入门极简教程: https://zhuanlan.zhihu.com/p/34587739 ✔
     - 《CUDA C Programming Guide》《CUDAC编程指南》导读：https://zhuanlan.zhihu.com/p/53773183
     - CUDA编程入门系列：https://zhuanlan.zhihu.com/p/97044592
+    - CUDA C Programming code: https://github.com/kriegalex/wrox-pro-cuda-c
     
 - 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html
 
@@ -97,3 +98,6 @@
     - 网格/块启发式算法为性能调节提供了一个很好的起点。
 
 - 避免分支分化
+    - 在向量中执行满足**交换律和结合律**的运算，被称为**规约问题**。
+    - 并行规约问题。
+    
