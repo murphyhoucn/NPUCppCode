@@ -22,6 +22,7 @@
     - CUDA编程入门极简教程: https://zhuanlan.zhihu.com/p/34587739 ✔
     - 《CUDA C Programming Guide》《CUDAC编程指南》导读：https://zhuanlan.zhihu.com/p/53773183
     - CUDA编程入门系列：https://zhuanlan.zhihu.com/p/97044592
+    - 谭升的博客: https://face2ai.com/program-blog/#GPU%E7%BC%96%E7%A8%8B%EF%BC%88CUDA%EF%BC%89
     - CUDA C Programming code: https://github.com/kriegalex/wrox-pro-cuda-c
     
 - 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html
