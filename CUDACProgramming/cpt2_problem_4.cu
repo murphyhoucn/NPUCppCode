@@ -94,7 +94,7 @@ int main(int argc, char **argv)
     printf("Using device %d : %s \n", dev, device_prop.name);
     CHECK(cudaSetDevice(dev));
 
-    // set up date size of matrix
+    // set up data size of matrix
     int nx = 1 << 14;
     int ny = 1 << 14;
 

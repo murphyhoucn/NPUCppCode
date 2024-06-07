@@ -83,16 +83,16 @@ int main(int argc, char **argv)
     cudaGetDeviceProperties(&device_prop, dev);
     printf("%s using Device %d : %s\n", argv[0], dev, device_prop.name);
 
-    int date_size = 64;
+    int data_size = 64;
     int block_size = 64;
-    printf("Data size : %d\n", date_size);
+    printf("Data size : %d\n", data_size);
 
     dim3 block(block_size, 1);
-    dim3 grid((date_size + block.x - 1) / block.x, 1);
+    dim3 grid((data_size + block.x - 1) / block.x, 1);
     printf("Execution Configure (block %d, grid %d)\n", block.x, grid.x);
 
     float *d_c;
-    size_t n_bytes = date_size * sizeof(float);
+    size_t n_bytes = data_size * sizeof(float);
     cudaMalloc((float **)&d_c, n_bytes);
 
     double i_start, i_elaps;
