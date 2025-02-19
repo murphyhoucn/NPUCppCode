@@ -17,17 +17,69 @@
 - Visual Studio Code, Remote-SSH, C/C++, Nsight Visual Studio Code Edition
 - CUDA-11.3, cuDNN 8.9
 
+### VSCode NVCC Configure
+```bash
+(base) houjinliang@3080server:~/MyDevProject/NPUCppCode/CUDACProgramming/.vscode$ ll
+总用量 24
+drwxrwxr-x 2 houjinliang houjinliang 4096 5月   5  2024 ./
+drwxrwxr-x 4 houjinliang houjinliang 4096 2月  19 15:47 ../
+-rw-rw-r-- 1 houjinliang houjinliang  453 5月   4  2024 c_cpp_properties.json
+-rw-rw-r-- 1 houjinliang houjinliang  267 5月   4  2024 launch.json
+-rw-rw-r-- 1 houjinliang houjinliang  541 5月  15  2024 settings.json
+-rw-rw-r-- 1 houjinliang houjinliang  228 5月   4  2024 tasks.json
+```
+配置好了之后，可以在VSC下直接对“.cu”文件编译并进入DeBUG。
+
+> 在Visual Studio Code（VSCode）编辑器中，`.vscode`目录用于存储特定于项目的配置文件。以下是对提到的四个文件的解释：
+
+`c_cpp_properties.json`:这个文件是C/C++扩展的一部分，用于配置C/C++项目的 IntelliSense。IntelliSense 是VSCode中用于代码补全、参数信息、快速信息和成员列表的功能。它包含了诸如包含路径、定义、编译器路径和 IntelliSense 模式等配置，这些配置有助于VSCode正确解析和索引C/C++代码。
+
+`launch.json`:这个文件用于配置VSCode的调试器。它定义了调试会话的属性，例如调试器类型（例如 GDB、LLDB、Python、Node.js 等）、程序启动命令、工作目录、环境变量、调试设置和断点等。用户可以通过修改这个文件来定制调试行为，例如设置程序启动参数、选择调试器、指定要调试的程序等。
+
+`settings.json`:这个文件包含了项目特定的VSCode设置。在这里设置的配置会覆盖用户和工作区级别的设置。它可以包含各种各样的设置，比如编辑器行为、代码格式化选项、插件配置、文件关联等。
+
+`tasks.json`:这个文件用于配置和管理VSCode中的任务。任务可以是任何外部工具，如编译器、构建脚本、命令行工具等。在这个文件中，你可以定义任务、它们的命令、参数、问题匹配器（用于捕获输出中的错误和警告）以及任务执行时的其他选项。
+
+这些文件共同为C/C++项目提供了一个完整的开发环境配置，允许开发者自定义编辑、调试和构建过程。通过在.vscode目录下配置这些文件，开发者可以在不同的机器或不同的开发环境中轻松重现相同的开发体验。
+
+
+若是不借助VScode的配置，直接使用命令行的nvcc直接对“.cu”进行编译
+``` bash
+# 不进入调试（下面两个命令一样，仅仅是参数顺序不同）
+nvcc cpt1_hello_from_gpu.cu -o main 
+nvcc -o main cpt1_hello_from_gpu.cu
+./main 
+
+# 进入调试
+nvcc -g -G -o main  cpt1_hello_from_gpu.cu
+gdb ./main 
+```
+
+
+
 ## 参考链接
 - 一个不错的博客网站：https://godweiyang.com/2021/01/25/cuda-reading/
     - CUDA编程入门极简教程: https://zhuanlan.zhihu.com/p/34587739 ✔
-    - 《CUDA C Programming Guide》《CUDAC编程指南》导读：https://zhuanlan.zhihu.com/p/53773183
+    - 《CUDA C Programming Guide》《CUDA C 编程指南》导读：https://zhuanlan.zhihu.com/p/53773183
     - CUDA编程入门系列：https://zhuanlan.zhihu.com/p/97044592
     - 谭升的博客: https://face2ai.com/program-blog/#GPU%E7%BC%96%E7%A8%8B%EF%BC%88CUDA%EF%BC%89
     - CUDA C Programming code: https://github.com/kriegalex/wrox-pro-cuda-c
     
 - 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html
 
-## 简单笔记
+## CUDA 基础 - 谭升的博客
+
+### Kernel核函数编写有以下限制
+- 只能访问设备内存
+- 必须有void返回类型
+- 不支持可变数量的参数
+- 不支持静态变量
+- 显示异步行为
+
+
+
+
+## CUDA_C_编程权威指南
 
 ### 第1章　基于CUDA的异构并行计算
 - 第一章概述了CUDA编程的一些基础知识，如串行编程和并行编程、CPU与GPU的异构计算、来自GPU的hello world!
