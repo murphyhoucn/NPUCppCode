@@ -18,6 +18,8 @@
 - CUDA-11.3, cuDNN 8.9
 
 ### VSCode NVCC Configure
+
+- 使用VSCode configuration
 ```bash
 (base) houjinliang@3080server:~/MyDevProject/NPUCppCode/CUDACProgramming/.vscode$ ll
 总用量 24
@@ -42,7 +44,7 @@ drwxrwxr-x 4 houjinliang houjinliang 4096 2月  19 15:47 ../
 
 这些文件共同为C/C++项目提供了一个完整的开发环境配置，允许开发者自定义编辑、调试和构建过程。通过在.vscode目录下配置这些文件，开发者可以在不同的机器或不同的开发环境中轻松重现相同的开发体验。
 
-
+- 直接在命令行使用nvcc
 若是不借助VScode的配置，直接使用命令行的nvcc直接对“.cu”进行编译
 ``` bash
 # 不进入调试（下面两个命令一样，仅仅是参数顺序不同）
@@ -53,6 +55,51 @@ nvcc -o main cpt1_hello_from_gpu.cu
 # 进入调试
 nvcc -g -G -o main  cpt1_hello_from_gpu.cu
 gdb ./main 
+```
+
+### 不再支持的nvprof命令
+目前主流的 CUDA 驱动不再支持nvprof命令!
+``` bash
+(base) houjinliang@3080server:~/MyProject/NPUCppCode/CUDACProgramming$ nvprof ./main 
+======== Warning: nvprof is not supported on devices with compute capability 8.0 and higher.
+                  Use NVIDIA Nsight Systems for GPU tracing and CPU sampling and NVIDIA Nsight Compute for GPU profiling.
+                  Refer https://developer.nvidia.com/tools-overview for more details.
+```
+- 目前主流的 CUDA 驱动不再支持nvprof命令，但我们仍可以在 NVIDIA Nsight Systems 中使用，在终端输入 `nsys nvprof ./*.o`就可以看到CUDA 程序执行的具体内容。
+- 另外，`nvprof --metrics` 命令的功能被转换到了 `ncu --metrics` 命令中，下面就对 nvprof/ncu --metrics命令的参数作详细解释，nsys 和 ncu 工具都有可视化版本，这里只讨论命令行版本。
+- https://zhuanlan.zhihu.com/p/666242337
+- https://www.cnblogs.com/peihuang/p/17665525.html
+
+
+[【NsightSystem】Nsight System命令大全](https://blog.csdn.net/qq_37794738/article/details/137379665)
+
+``` markdown
+Nsight System
+
+nsys profile：启动Nsight Systems的性能分析模式
+
+-o 或 --output：指定输出文件的名称。例如，-o my_profile 会生成 my_profile.qdrep 和 my_profile.sqlite 文件。
+–stat：启用或禁用统计信息的收集。接受的值为 true 或 false。
+
+–capture-range：指定性能数据收集的范围。常见的值包括 cudaProfilerApi（基于 CUDA Profiler API 标记的区域）、nvtx（基于 NVTX 范围的区域）等。
+–trace：控制哪些类型的事件应被追踪。例如，cuda、nvtx、osrt（操作系统运行时）等。
+–sample：启用或禁用CPU采样。接受的值为 cpu 或 none。
+–force-overwrite：如果输出文件已存在，强制覆盖。
+–delay：分析开始前的延迟时间（以秒为单位）。
+–duration：分析的持续时间（以秒为单位）。
+–stop-on-exit：当应用退出时自动停止分析。
+–kill：分析结束后杀死应用进程。
+–pause：开始时暂停数据收集，直到显式恢复。
+–cudabacktrace：当CUDA应用出现错误时，收集backtrace。
+–cpuctxsw：追踪CPU上下文切换。
+–gpu-metrics：指定要收集的GPU性能指标。
+–export：在分析结束后自动导出报告，支持的格式包括 sqlite、qdrep、csv 等。
+–launch：启动并分析一个应用程序。
+
+```
+
+```bash
+nsys profile --stats=true ./main
 ```
 
 
@@ -75,9 +122,6 @@ gdb ./main
 - 不支持可变数量的参数
 - 不支持静态变量
 - 显示异步行为
-
-
-
 
 ## CUDA_C_编程权威指南
 
@@ -113,19 +157,7 @@ gdb ./main
     - 带宽通常是用来描述单位时间内最大可能的数据传输量。
     - 吞吐量是用来描述单位时间内任何形式的信息或操作的执行速度，例如，每个周期内完成多少个指令。
 
-- 目前主流的 CUDA 驱动不再支持nvprof命令!
-``` bash
-(base) houjinliang@3080server:~/MyProject/NPUCppCode/CUDACProgramming$ nvprof ./main 
-======== Warning: nvprof is not supported on devices with compute capability 8.0 and higher.
-                  Use NVIDIA Nsight Systems for GPU tracing and CPU sampling and NVIDIA Nsight Compute for GPU profiling.
-                  Refer https://developer.nvidia.com/tools-overview for more details.
-```
-    - 目前主流的 CUDA 驱动不再支持nvprof命令，但我们仍可以在 NVIDIA Nsight Systems 中使用，在终端输入 `nsys nvprof ./*.o`就可以看到CUDA 程序执行的具体内容。
-    - 另外，`nvprof --metrics` 命令的功能被转换到了 `ncu --metrics` 命令中，下面就对 nvprof/ncu --metrics命令的参数作详细解释，nsys 和 ncu 工具都有可视化版本，这里只讨论命令行版本。
-    - https://zhuanlan.zhihu.com/p/666242337
-    - https://www.cnblogs.com/peihuang/p/17665525.html
-
-- CUDA编程是与硬件紧密相关的，我所有的GPU是RTX 3080
+- CUDA编程是与硬件紧密相关的，我所用的GPU是RTX 3080
     - GA102 白皮书: https://www.nvidia.com/content/PDF/nvidia-ampere-ga-102-gpu-architecture-whitepaper-v2.pdf
     - RTX 3080 规格说明：https://www.bilibili.com/video/BV1oV41127q5/?spm_id_from=333.337.search-card.all.click&vd_source=6d46640a443a49f050af078d1f65143e
     - RTX 3080 GPU采用的是安培架构，核心代号GA102，但RTX 3080并没有用到完整的GA102,而是在完整的GA102的基础上阉割掉了一个GPC，所以可用SM之后68组。
