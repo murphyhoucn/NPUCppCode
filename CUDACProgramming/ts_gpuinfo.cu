@@ -21,7 +21,6 @@ int main()
         printf("Detected %d CUDA Capable device(s)\n", deviceCount);
     }
 
-
     int dev = 0, driverVersion = 0, runtimeVersion = 0;
     cudaSetDevice(dev);
     cudaDeviceProp deviceProp;
