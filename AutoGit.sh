@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置commit消息中的起始标记
-START_TAG="[AUTO] "
+START_TAG="[AUTO]"
 
 # 执行git status
 echo "Running git status..."
