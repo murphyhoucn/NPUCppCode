@@ -1,23 +1,30 @@
 # CUDA C Programming
 
 ## 参考资料
-- 《CUDA C 编程权威指南》[美] 马克斯·格罗斯曼（Max Grossmen）& [美] 泰·麦克切尔（Ty McKercher） 机械工业出版社  2017年出版
-    - 第1章　基于CUDA的异构并行计算
-    - 第2章　CUDA编程模型
-    - 第3章　CUDA执行模型
-    - 第4章　全局内存
-    - 第5章　共享内存和常量内存
-    - 第6章　流和并发
-    - 第7章　调整指令级原语
-    - 第8章　GPU加速库和OpenACC
-- 
+- 一个不错的博客网站：https://godweiyang.com/2021/01/25/cuda-reading/
+    - CUDA编程入门极简教程: https://zhuanlan.zhihu.com/p/34587739 ✔
+    - 《CUDA C Programming Guide》《CUDA C 编程指南》导读：https://zhuanlan.zhihu.com/p/53773183
+    - CUDA编程入门系列：https://zhuanlan.zhihu.com/p/97044592
+    - 谭升的博客: https://face2ai.com/program-blog/#GPU%E7%BC%96%E7%A8%8B%EF%BC%88CUDA%EF%BC%89
+    - CUDA C Programming code: https://github.com/kriegalex/wrox-pro-cuda-c
+- 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html
+
 
 ## 项目环境
 - Ubuntu 20.04 LTS (Host) / Ubuntu 18.04 LTS (Server) 
 - Visual Studio Code, Remote-SSH, C/C++, Nsight Visual Studio Code Edition
 - CUDA-11.3, cuDNN 8.9
 
-### VSCode NVCC Configure
+``` bash
+(base) houjinliang@3080server:~/cuda-11.3$ nsys --version
+NVIDIA Nsight Systems version 2021.1.3.14-b695ea9
+(base) houjinliang@3080server:~/cuda-11.3$ ncu --version
+NVIDIA (R) Nsight Compute Command Line Profiler
+Copyright (c) 2018-2021 NVIDIA Corporation
+Version 2021.1.1.0 (build 29918364) (public-release)
+```
+
+## VSCode NVCC Configure
 
 - 使用VSCode configuration
 ```bash
@@ -57,19 +64,47 @@ nvcc -g -G -o main  cpt1_hello_from_gpu.cu
 gdb ./main 
 ```
 
-### 不再支持的nvprof命令
+# CUDA 基础 - 谭升的博客 NOTE
+
+## Kernel核函数编写有以下限制
+- 只能访问设备内存
+- 必须有void返回类型
+- 不支持可变数量的参数
+- 不支持静态变量
+- 显示异步行为
+
+## 不再支持的nvprof命令
+
 目前主流的 CUDA 驱动不再支持nvprof命令!
+
 ``` bash
 (base) houjinliang@3080server:~/MyProject/NPUCppCode/CUDACProgramming$ nvprof ./main 
 ======== Warning: nvprof is not supported on devices with compute capability 8.0 and higher.
                   Use NVIDIA Nsight Systems for GPU tracing and CPU sampling and NVIDIA Nsight Compute for GPU profiling.
                   Refer https://developer.nvidia.com/tools-overview for more details.
 ```
-- 目前主流的 CUDA 驱动不再支持nvprof命令，但我们仍可以在 NVIDIA Nsight Systems 中使用，在终端输入 `nsys nvprof ./*.o`就可以看到CUDA 程序执行的具体内容。
-- 另外，`nvprof --metrics` 命令的功能被转换到了 `ncu --metrics` 命令中，下面就对 nvprof/ncu --metrics命令的参数作详细解释，nsys 和 ncu 工具都有可视化版本，这里只讨论命令行版本。
-- https://zhuanlan.zhihu.com/p/666242337
-- https://www.cnblogs.com/peihuang/p/17665525.html
 
+> [CUDA编程性能分析工具-metrics参数含义 | 知乎](https://zhuanlan.zhihu.com/p/666242337)
+> nsys 和 ncu 工具都有可视化版本，这里只讨论命令行版本。
+> nsys是系统层面的分析工具，可以分析主机与设备端的信息。ncu则是用于分析核函数的工具。两者均有图形界面版本和命令行版本。
+
+- 目前主流的 CUDA 驱动不再支持nvprof命令，但我们仍可以在 NVIDIA Nsight Systems 中使用，在终端输入 `nsys nvprof ./*.o`就可以看到CUDA 程序执行的具体内容。
+```bash
+nsys profile --stats=true ./main
+```
+
+- 另外，`nvprof --metrics` 命令的功能被转换到了 `ncu --metrics` 命令中。
+
+
+
+
+## 性能分析工具 
+
+Nsight Systems *(nsys)*：/mnt/houjinliang/cuda-11.3/nsight-systems-2021.1.3
+Nsight Compute *(ncu)* ：/mnt/houjinliang/cuda-11.3/nsight-compute-2021.1.1
+
+Nsight Systems 是一个系统级性能分析工具，它允许开发者捕获和分析应用程序的整体行为，包括 CPU 和 GPU 的活动。
+Nsight Compute 是一个用于 CUDA 核心分析和优化的命令行工具。它专注于 GPU 内部的执行细节，提供深入的分析来帮助开发者优化 CUDA 核函数和内存操作。
 
 [【NsightSystem】Nsight System命令大全](https://blog.csdn.net/qq_37794738/article/details/137379665)
 
@@ -95,43 +130,33 @@ nsys profile：启动Nsight Systems的性能分析模式
 –gpu-metrics：指定要收集的GPU性能指标。
 –export：在分析结束后自动导出报告，支持的格式包括 sqlite、qdrep、csv 等。
 –launch：启动并分析一个应用程序。
-
-```
-
-```bash
-nsys profile --stats=true ./main
 ```
 
 
 
-## 参考链接
-- 一个不错的博客网站：https://godweiyang.com/2021/01/25/cuda-reading/
-    - CUDA编程入门极简教程: https://zhuanlan.zhihu.com/p/34587739 ✔
-    - 《CUDA C Programming Guide》《CUDA C 编程指南》导读：https://zhuanlan.zhihu.com/p/53773183
-    - CUDA编程入门系列：https://zhuanlan.zhihu.com/p/97044592
-    - 谭升的博客: https://face2ai.com/program-blog/#GPU%E7%BC%96%E7%A8%8B%EF%BC%88CUDA%EF%BC%89
-    - CUDA C Programming code: https://github.com/kriegalex/wrox-pro-cuda-c
-    
-- 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html
 
-## CUDA 基础 - 谭升的博客
+---
 
-### Kernel核函数编写有以下限制
-- 只能访问设备内存
-- 必须有void返回类型
-- 不支持可变数量的参数
-- 不支持静态变量
-- 显示异步行为
+# CUDA_C_编程权威指南 BOOKNOTE
 
-## CUDA_C_编程权威指南
+- 《CUDA C 编程权威指南》[美] 马克斯·格罗斯曼（Max Grossmen）& [美] 泰·麦克切尔（Ty McKercher） 机械工业出版社  2017年出版
+    - 第1章　基于CUDA的异构并行计算
+    - 第2章　CUDA编程模型
+    - 第3章　CUDA执行模型
+    - 第4章　全局内存
+    - 第5章　共享内存和常量内存
+    - 第6章　流和并发
+    - 第7章　调整指令级原语
+    - 第8章　GPU加速库和OpenACC
+- 
 
-### 第1章　基于CUDA的异构并行计算
+## 第1章　基于CUDA的异构并行计算
 - 第一章概述了CUDA编程的一些基础知识，如串行编程和并行编程、CPU与GPU的异构计算、来自GPU的hello world!
 - 第一章的习题没什么大问题
  - 程序结束时： 在程序即将结束时调用 cudaDeviceReset() 可以确保释放所有CUDA资源，以避免内存泄漏或其他资源泄漏。
  - 如果程序结束时没有调用 cudaDeviceReset()，程序就没有输出“hello world from gpu”了。这是为什么？❓️
 
-### 第2章　CUDA编程模型
+## 第2章　CUDA编程模型
 - 这一章的重点内容在*CUDA的两级线性层次结构——grid和block*。⭐️
 - ⭐️组织线程是CUDA编程的重点之一，但看完了这一章感觉有点儿稀里糊涂的，没有搞懂到底是怎么组织线程，怎么找到最佳执行配置！
 - 线程和块索引映射到矩阵坐标上，矩阵坐标映射到全局内存中的索引/存储单元上的两个公式，很重要！⭐️
@@ -143,7 +168,7 @@ nsys profile --stats=true ./main
 - 二维网格与二维块，二维网格与一维块，一维网格与二维块，一维网格与一维块
 - 第二章的习题。。。额。。不太会做啊！😭
 
-### 第3章　CUDA执行模型第2章　CUDA编程模型
+## 第3章　CUDA执行模型第2章　CUDA编程模型
 
 - CUDA编程模型中两个主要的抽象概念：内存层次结构和线程层次结构。
 

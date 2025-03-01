@@ -5,7 +5,7 @@ class Solution
 public:
     bool isPowerOfTwo(int n)
     {
-        return n > 0 && (n & (n - 1)) == 0;
+        return n > 0 && (n & (-n)) == n;
     }
 };
 
@@ -21,6 +21,10 @@ int main()
 /*
 T: O(1)
 S: O(1)
-*/
 
-// 位运算
+位运算
+负数n的二进制，把n的二进制按位取反，然后+1
+
+Dec:  4  Bin: (前面全是0)0100
+Dec: -4  Bin: (前面全是1)1100
+*/
