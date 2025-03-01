@@ -95,10 +95,7 @@ nsys profile --stats=true ./main
 
 - 另外，`nvprof --metrics` 命令的功能被转换到了 `ncu --metrics` 命令中。
 
-
-
-
-## 性能分析工具 
+## 性能分析工具 nsys and ncu
 
 Nsight Systems *(nsys)*：/mnt/houjinliang/cuda-11.3/nsight-systems-2021.1.3
 Nsight Compute *(ncu)* ：/mnt/houjinliang/cuda-11.3/nsight-compute-2021.1.1
@@ -131,6 +128,65 @@ nsys profile：启动Nsight Systems的性能分析模式
 –export：在分析结束后自动导出报告，支持的格式包括 sqlite、qdrep、csv 等。
 –launch：启动并分析一个应用程序。
 ```
+
+### ncu 权限问题
+
+- 普通用户使用ncu是没有权限的
+``` bash
+(base) houjinliang@3080server:~/MyDevProject/NPUCppCode/CUDACProgramming$ ncu ./main
+==PROF== Connected to process 51302 (/mnt/houjinliang/MyDevProject/NPUCppCode/CUDACProgramming/main)
+==ERROR== Error: ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+GPU Execution configuration <<<(256, 256), (32, 32)>>>  time: 0.001107
+==PROF== Disconnected from process 51302
+==WARNING== No kernels were profiled.
+==WARNING== Profiling kernels launched by child processes requires the --target-processes all option.
+```
+
+- 使用root用户把此普通用户加入到sudoers中
+> [Linux学习-给普通用户加sudo权限 | CSDN](https://summit.csdn.net/?spm=1001.2101.3001.8293)
+``` bash
+# 执行这个命令会使用nano打开/etc/sudoers
+visudo
+
+# 在“root ALL=(ALL) ALL”这一行下面，再加入一行：
+# xxxxxxx ALL=(ALL) ALL
+
+# Ctrl + X退出Nano，退出的时候选择保存。
+```
+
+- xxxxxxx用户加入到sudoers中之后，无法使用sudo ncu
+``` bash
+(base) houjinliang@3080server:~/MyDevProject/NPUCppCode/CUDACProgramming$ sudo ncu ./main 
+sudo: ncu：找不到命令
+```
+
+当你尝试使用 sudo 来运行 ncu 命令时，你遇到了 "找不到命令" 的错误，这是因为 sudo 默认不会使用普通用户的 PATH 环境变量。相反，sudo 使用的是根用户（root）的环境变量，这通常不包括普通用户的本地安装路径（如 ~/.local/bin）。
+以下是一些原因和解决方案：
+
+**原因:** 
+- 环境变量PATH不同：普通用户和根用户的环境变量PATH通常是不同的。如果 ncu 安装在普通用户的路径下，那么在 sudo 下可能找不到它。
+- 安全考虑：sudo 设计为最小化环境变量的使用，以防止恶意软件利用环境变量来执行未经授权的命令。
+
+**解决方案:**
+- (目前的使用方法)使用完整路径：如你已发现，使用 ncu 的完整路径可以解决这个问题，因为这样不依赖于环境变量。
+``` bash
+sudo /mnt/houjinliang/cuda-11.3/nsight-compute-2021.1.1/ncu ./main
+```
+
+- 修改sudoers文件：如果你经常需要以 sudo 方式运行特定路径下的命令，你可以修改 /etc/sudoers 文件来包含普通用户的 PATH。但是，这通常不被推荐，因为它可能会引入安全风险。
+要安全地修改 sudoers 文件，使用 visudo 命令：
+sudo visudo
+然后在文件中添加以下行：
+Defaults    secure_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/houjinliang/cuda-11.3/nsight-compute-2021.1.1"
+请确保将 ncu 的路径添加到 secure_path 变量中。
+
+- 创建符号链接：如果合适，你可以在根用户可访问的目录下创建一个指向 ncu 的符号链接，但这也需要管理员权限，并且可能不被系统管理员所接受。
+sudo ln -s /mnt/houjinliang/cuda-11.3/nsight-compute-2021.1.1/ncu /usr/local/bin/ncu
+然后你就可以直接使用 sudo ncu ./main。
+
+请记住，任何对系统配置的更改都应该谨慎进行，并且最好理解其含义和潜在影响。如果你不确定如何操作，最好咨询系统管理员或查阅官方文档。
+
+
 
 
 
