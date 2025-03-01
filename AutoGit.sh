@@ -3,6 +3,8 @@
 # 设置commit消息中的起始标记
 START_TAG="[AUTO]"
 
+current_time=$(date "+%Y_%m_%d__%H_%M_%S")
+
 # 执行git status
 echo "Running git status..."
 git status
@@ -17,7 +19,7 @@ if git diff-index --quiet HEAD --; then
 else
     # 执行git commit
     echo "Running git commit..."
-    git commit -m "$START_TAG `date` {From 3080 Server}"
+    git commit -m "$START_TAG $current_time {From 3080 Server}"
 
     # 执行git push
     echo "Running git push..."
