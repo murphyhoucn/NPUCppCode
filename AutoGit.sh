@@ -17,7 +17,7 @@ if git diff-index --quiet HEAD --; then
 else
     # 执行git commit
     echo "Running git commit..."
-    git commit -m "$START_TAG `date`"
+    git commit -m "$START_TAG `date` {From 3080 Server}"
 
     # 执行git push
     echo "Running git push..."
