@@ -22,3 +22,20 @@ inline double Seconds()
     return ((double)tp.tv_sec + (double)tp.tv_usec * 1.e-6);
 }
 #endif // __COMMON_H
+
+void initialData_int(int *ip, int size)
+{
+    time_t t;
+    srand((unsigned)time(&t));
+    for (int i = 0; i < size; i++)
+    {
+        ip[i] = int(rand() & 0xff);
+    }
+}
+
+double cpuSecond()
+{
+    struct timeval tp;
+    gettimeofday(&tp, NULL);
+    return ((double)tp.tv_sec + (double)tp.tv_usec * 1e-6);
+}
