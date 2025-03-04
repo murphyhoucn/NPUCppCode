@@ -39,3 +39,12 @@ double cpuSecond()
     gettimeofday(&tp, NULL);
     return ((double)tp.tv_sec + (double)tp.tv_usec * 1e-6);
 }
+
+void initDevice(int devNum)
+{
+    int dev = devNum;
+    cudaDeviceProp deviceProp;
+    CHECK(cudaGetDeviceProperties(&deviceProp, dev));
+    printf("Using device %d: %s\n", dev, deviceProp.name);
+    CHECK(cudaSetDevice(dev));
+}
