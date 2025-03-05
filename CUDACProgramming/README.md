@@ -7,7 +7,10 @@
     - CUDA编程入门系列：https://zhuanlan.zhihu.com/p/97044592
     - 谭升的博客: https://face2ai.com/program-blog/#GPU%E7%BC%96%E7%A8%8B%EF%BC%88CUDA%EF%BC%89
     - CUDA C Programming code: https://github.com/kriegalex/wrox-pro-cuda-c
-- 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html
+    - How CUDA Programming Works | GTC 2022
+        - [English](https://www.youtube.com/watch?v=n6M8R8-PlnE&ab_channel=DantheMan)
+        - [Chinese](https://www.bilibili.com/video/BV1gF41127vp?vd_source=6d46640a443a49f050af078d1f65143e)
+- 代码风格采用Google开源项目风指南-C++风格指南：https://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents.html 
 
 
 ## 项目环境

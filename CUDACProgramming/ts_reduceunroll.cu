@@ -65,7 +65,7 @@ __global__ void reduceUnroll2(int *g_idata, int *g_odata, unsigned int n)
     int *idata = g_idata + blockIdx.x * blockDim.x * 2; // 将全局数据指针转换为块内的局部数据指针，*2是因为每个块处理两个元素
     if (idx + blockDim.x < n)
     {
-        g_idata[idx] += g_idata[idx + blockDim.x]; // 如果索引加上块大小小于数组大小，则执行相邻元素相加的操作
+        g_idata[idx] += g_idata[idx + blockDim.x]; // 如果索引加上块大小小于数组大小，则执行相邻元素相加的操作-数组中相邻的元素（相隔块大小的距离）相加-从别的块取数据
     }
     __syncthreads(); // 确保上述操作完成后再继续，同步块内的所有线程
     // in-place reduction in global memory
@@ -195,7 +195,7 @@ __global__ void reduceUnrollWarp8(int *g_idata, int *g_odata, unsigned int n)
     // write result for this block to global mem
     if (tid < 32)
     {
-        volatile int *vmem = idata;
+        volatile int *vmem = idata; // volatile 关键字用于告诉编译器不要对这个指针指向的内存进行优化，因为它的值可能会在程序的其他部分被改变。
         vmem[tid] += vmem[tid + 32];
         vmem[tid] += vmem[tid + 16];
         vmem[tid] += vmem[tid + 8];
