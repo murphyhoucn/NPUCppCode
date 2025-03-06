@@ -21,7 +21,6 @@ inline double Seconds()
     int i = gettimeofday(&tp, &tzp);
     return ((double)tp.tv_sec + (double)tp.tv_usec * 1.e-6);
 }
-#endif // __COMMON_H
 
 void initialData_int(int *ip, int size)
 {
@@ -30,6 +29,16 @@ void initialData_int(int *ip, int size)
     for (int i = 0; i < size; i++)
     {
         ip[i] = int(rand() & 0xff);
+    }
+}
+
+void initialData(float *ip, int size)
+{
+    time_t t;
+    srand((unsigned)time(&t));
+    for (int i = 0; i < size; i++)
+    {
+        ip[i] = (float)(rand() & 0xffff) / 1000.0f;
     }
 }
 
@@ -48,3 +57,20 @@ void initDevice(int devNum)
     printf("Using device %d: %s\n", dev, deviceProp.name);
     CHECK(cudaSetDevice(dev));
 }
+
+void checkResult(float *hostRef, float *gpuRef, const int N)
+{
+    double epsilon = 1.0E-8;
+    for (int i = 0; i < N; i++)
+    {
+        if (abs(hostRef[i] - gpuRef[i]) > epsilon)
+        {
+            printf("Results don\'t match!\n");
+            printf("%f(hostRef[%d] )!= %f(gpuRef[%d])\n", hostRef[i], i, gpuRef[i], i);
+            return;
+        }
+    }
+    printf("Check result success!\n");
+}
+
+#endif // __COMMON_H

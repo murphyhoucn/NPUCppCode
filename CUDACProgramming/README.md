@@ -190,7 +190,16 @@ sudo ln -s /mnt/houjinliang/cuda-11.3/nsight-compute-2021.1.1/ncu /usr/local/bin
 请记住，任何对系统配置的更改都应该谨慎进行，并且最好理解其含义和潜在影响。如果你不确定如何操作，最好咨询系统管理员或查阅官方文档。
 
 
+## 动态并行
+``` bash
+(base) houjinliang@3080server:~/MyDevProject/NPUCppCode/CUDACProgramming$ nvcc -o main  ts_nestedhelloworld.cu 
+ts_nestedhelloworld.cu(16): error: kernel launch from __device__ or __global__ functions requires separate compilation mode
 
+1 error detected in the compilation of "ts_nestedhelloworld.cu".
+(base) houjinliang@3080server:~/MyDevProject/NPUCppCode/CUDACProgramming$ nvcc -o main  ts_nestedhelloworld.cu -lcudadevrt --relocatable-device-code true
+```
+
+`-lcudadevrt --relocatable-device-code true`这两个指令是动态并行需要的一个库。
 
 
 
