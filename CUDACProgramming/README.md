@@ -209,6 +209,16 @@ ts_nestedhelloworld.cu(16): error: kernel launch from __device__ or __global__ f
 内存延迟是影响核函数的一大关键，内存延迟，也就是从你发起内存请求到数据进入SM的寄存器的整个时间。
 内存带宽，也就是SM访问内存的速度，它以单位时间内传输的字节数进行测量。
 
+## DRAM 加载和存储的吞吐量
+``` bash
+sudo ~/cuda-11.3/nsight-compute-2021.1.1/ncu --metrics dram__bytes_read.sum.per_second,dram__bytes_write.sum.per_second  ./main
+```
+
+
+
+
+
+
 ---
 
 # CUDA_C_编程权威指南 BOOKNOTE
