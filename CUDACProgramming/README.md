@@ -216,6 +216,22 @@ sudo ~/cuda-11.3/nsight-compute-2021.1.1/ncu --metrics dram__bytes_read.sum.per_
 
 
 
+## GPU的内存
+- 按照物理上的位置
+    - 板载内存（显卡的PCB板上的GDDR SDRAM）
+    - 片上内存(显卡核心Die内部的Memory)
+
+> DDR=Double Data Rate双倍速率同步动态随机存储器。严格的说DDR应该叫DDR SDRAM，人们习惯称为DDR，其中，SDRAM 是Synchronous Dynamic Random Access Memory的缩写，即同步动态随机存取存储器。而DDR SDRAM是Double Data Rate SDRAM的缩写，是双倍速率同步动态随机存储器的意思。
+> GDDR是Graphics Double Data Rate的缩写，为显存的一种，GDDR是为了设计高端显卡而特别设计的高性能DDR存储器规格，其有专属的工作频率、时钟频率、电压，因此与市面上标准的DDR存储器有所差异，与普通DDR内存不同且不能共用。一般它比主内存中使用的普通DDR存储器时钟频率更高，发热量更小，所以更适合搭配高端显示芯片。
+
+全局内存是较大的板载内存，延迟高，共享内存是片上的较小的内存，延迟低，带宽高。前面我我们讲过工厂的例子，全局内存就是原料工厂，要用车来运输原料，共享内存是工厂内存临时存放原料的房间，取原料路程短速度快。
+
+共享内存是一种可编程的缓存，共享内存通常的用途有：
+- 块内线程通信的通道
+- 用于全局内存数据的可编程管理的缓存
+- 告诉暂存存储器，用于转换数据来优化全局内存访问模式
+
+![](https://murphyimg.oss-cn-beijing.aliyuncs.com/img/202503151220951.png)
 
 
 
