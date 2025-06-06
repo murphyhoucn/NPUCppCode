@@ -37,7 +37,7 @@ int main()
     printf("Memory Bus width:                            %d-bits\n", deviceProp.memoryBusWidth);
 
     if (deviceProp.l2CacheSize)
-        printf("L2 Cache Size:                               %d bytes\n", deviceProp.l2CacheSize);
+        printf("L2 Cache Size:                               %d bytes (%f Mbytes)\n", deviceProp.l2CacheSize, deviceProp.l2CacheSize / 1024.0 / 1024.0);
 
     printf("Max Texture Dimension Size (x,y,z)           1D=(%d), 2D=(%d, %d), 3D=(%d, %d, %d)\n", deviceProp.maxTexture1D, deviceProp.maxTexture2D[0], deviceProp.maxTexture2D[1], deviceProp.maxTexture3D[0], deviceProp.maxTexture3D[1], deviceProp.maxTexture3D[2]);
     printf("Max Layered Texture Size (dim) x layers      1D=(%d) x %d, 2D=(%d, %d) x %d \n", deviceProp.maxTexture1DLayered[0], deviceProp.maxTexture1DLayered[1], deviceProp.maxTexture2DLayered[0], deviceProp.maxTexture2DLayered[1], deviceProp.maxTexture2DLayered[2]);
@@ -53,10 +53,21 @@ int main()
     printf("Maximum size of each dimension of a grid:    %d x %d x %d\n", deviceProp.maxGridSize[0], deviceProp.maxGridSize[1], deviceProp.maxGridSize[2]);
     printf("Maximum memory pitch:                        %lu bytes\n", deviceProp.memPitch); // 最大连续线性内存
 
-    printf("The number of multiprocessors:               %d\n", deviceProp.multiProcessorCount);
+    printf("The number of multiprocessors(SM):           %d\n", deviceProp.multiProcessorCount);
     printf("Total amount of constant memeory:            %4.2f KB\n", deviceProp.totalConstMem / 1024.0);
     printf("Total amount of shared memeory per block:    %4.2f KB\n", deviceProp.sharedMemPerBlock / 1024.0);
     printf("Total num of registers available per block:  %f KB\n", deviceProp.regsPerBlock / 1024.0);
 
+    printf("Bool: %d\n", deviceProp.localL1CacheSupported);
+    printf("Bool: %d\n", deviceProp.globalL1CacheSupported);
+
     exit(EXIT_SUCCESS);
 }
+
+/*
+
+GA 102 的手册
+https://www.nvidia.com/content/PDF/nvidia-ampere-ga-102-gpu-architecture-whitepaper-v2.pdf
+
+https://www.techpowerup.com/gpu-specs/geforce-rtx-3080.c3621
+*/

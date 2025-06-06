@@ -69,6 +69,13 @@ gdb ./main
 
 # CUDA 基础 - 谭升的博客 NOTE
 
+## NVIDIA GPU Compute Capability
+https://developer.nvidia.com/cuda-gpus#compute
+
+GeForce RTX 3080	8.6
+GeForce RTX 3090	8.6
+GeForce RTX 4090	8.9
+
 ## Kernel核函数编写有以下限制
 - 只能访问设备内存
 - 必须有void返回类型
@@ -233,6 +240,14 @@ sudo ~/cuda-11.3/nsight-compute-2021.1.1/ncu --metrics dram__bytes_read.sum.per_
 
 ![](https://murphyimg.oss-cn-beijing.aliyuncs.com/img/202503151220951.png)
 
+
+## 存储体宽度
+
+GeForce RTX 3080	8.6 
+Total amout of shared memory per block:      49152 bytes(48.000000 kbytes)
+
+## DeviceProp
+https://docs.nvidia.com/cuda/cuda-runtime-api/structcudaDeviceProp.html
 
 
 ---
